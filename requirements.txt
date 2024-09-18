@@ -1,3 +1,4 @@
+boto3
 matplotlib
 pandas
 streamlit

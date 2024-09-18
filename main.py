@@ -4,34 +4,58 @@ import json
 from datetime import datetime
 import matplotlib.pyplot as plt
 
-from utils import login, logout, dashboard, log_or_edit_cpd, edit_cpd
+from utils import (
+    login,
+    log_or_edit_cpd,
+    edit_cpd,
+    admin_dashboard,
+    dashboard,
+    logout
+)
 
-
-# Session state para makeep track si login status
+# Initialize session state variables
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
+
+if 'username' not in st.session_state:
+    st.session_state.username = ""
 
 if 'full_name' not in st.session_state:
     st.session_state.full_name = ""
 
+if 'user_type' not in st.session_state:
+    st.session_state.user_type = ""
+
 if 'page' not in st.session_state:
     st.session_state.page = "Login"
 
-# Navigation
-if st.session_state.authenticated:
-    # Show/Disply welcome message and logout
-    st.sidebar.write(f"Welcome {st.session_state.full_name}")
-    if st.sidebar.button("Logout"):
-        logout()
+# Main app logic
+def main():
+    if st.session_state.page == "Login":
+        login()
+    elif st.session_state.authenticated:
+        # Sidebar navigation
+        st.sidebar.title("Navigation")
+        page = st.sidebar.selectbox("Select Page", ["Dashboard", "Log CPD", "Edit CPD"])
 
-    # Display the navigation options (you can change this to a button if you want or other form instead of radio pero ok na din as is for now)
-    st.session_state.page = st.sidebar.radio("Go to", ["Dashboard", "Log New CPD", "Edit CPD"])
-    # Very basic naming option, pwede mo change name if you want but do check kung san sila nakalink sa taas.
-    if st.session_state.page == "Dashboard":
-        dashboard()
-    elif st.session_state.page == "Log New CPD":
-        log_or_edit_cpd()
-    elif st.session_state.page == "Edit CPD":
-        edit_cpd()
-else:
-    login()
+        if st.session_state.user_type == 'admin':
+            if page == "Dashboard":
+                admin_dashboard()
+            elif page == "Log CPD":
+                log_or_edit_cpd()
+            elif page == "Edit CPD":
+                edit_cpd()
+        else:
+            if page == "Dashboard":
+                dashboard()
+            elif page == "Log CPD":
+                log_or_edit_cpd()
+            elif page == "Edit CPD":
+                edit_cpd()
+
+        # Logout button
+        if st.sidebar.button("Logout"):
+            logout()
+
+if __name__ == "__main__":
+    main()
