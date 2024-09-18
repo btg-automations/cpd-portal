@@ -10,6 +10,7 @@ from utils import (
     edit_cpd,
     admin_dashboard,
     dashboard,
+    admin_view_dashboard,
     logout
 )
 
@@ -36,18 +37,18 @@ def main():
     elif st.session_state.authenticated:
         # Sidebar navigation
         st.sidebar.title("Navigation")
-        page = st.sidebar.selectbox("Select Page", ["Dashboard", "Log CPD", "Edit CPD"])
-
+        
         if st.session_state.user_type == 'admin':
-            if page == "Dashboard":
+            page = st.sidebar.selectbox("Select Page", ["Overview", "Search"])
+            if page == "Overview":
                 admin_dashboard()
-            elif page == "Log CPD":
-                log_or_edit_cpd()
-            elif page == "Edit CPD":
-                edit_cpd()
+            elif page == "Search":
+                admin_view_dashboard()
         else:
+            page = st.sidebar.selectbox("Select Page", ["Dashboard", "Log CPD", "Edit CPD"])
             if page == "Dashboard":
-                dashboard()
+                username = st.session_state.username
+                dashboard(username)
             elif page == "Log CPD":
                 log_or_edit_cpd()
             elif page == "Edit CPD":
