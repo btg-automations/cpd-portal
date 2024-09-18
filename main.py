@@ -14,6 +14,8 @@ from utils import (
     logout
 )
 
+st.set_page_config(page_title="CPD Tracker")
+
 # Initialize session state variables
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False

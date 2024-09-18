@@ -206,26 +206,57 @@ def dashboard(username):
     total_cpd_hours_lifetime = user_data['Hours'].sum()
 
     cpd_by_type = user_data['Type'].value_counts()
+    
+    # Full-width pie chart
+    st.header("CPD Completed by Type")
+    fig, ax = plt.subplots(figsize=(10, 6))  # Adjusted size for full-width view
+    colors = plt.get_cmap('Set3')(range(len(cpd_by_type)))
+    patches, texts, autotexts = ax.pie(
+        cpd_by_type,
+        # labels=cpd_by_type.index,
+        autopct='%1.1f%%',
+        startangle=90,
+        wedgeprops={'width': 0.3},
+        colors=colors
+    )
 
-    col1, col2, col3 = st.columns(3)
+    # Include percentages in legend tables
+    legend_labels = [f"{label} ({pct})" for label, pct in zip(cpd_by_type.index, [f"{p}"
+                        for p in [pct for pct in [text.get_text() for text in autotexts]]])]
+
+    # Legend
+    ax.legend(
+        patches,
+        legend_labels,
+        title="CPD Types",
+        loc="center left",
+        bbox_to_anchor=(1, 0, 0.5, 1)  # Position the legend outside the pie chart
+    )
+    ax.axis('equal')
+
+    # Hide the figure and axis background
+    fig.patch.set_visible(False)
+    ax.patch.set_visible(False)
+
+    st.pyplot(fig)
+    
+    st.divider()
+
+    # Layout for metrics and pie chart
+    col1, col2 = st.columns([1, 1])  # Adjusted column ratio to give more space for the chart
 
     with col1:
         st.subheader("Total CPD Hours This Year")
         st.metric("Completed Hours", total_cpd_hours_year)
-        st.metric("Yearly Goal (40 hrs)", f"{percentage_completed:.2f}%")
-        st.progress(percentage_completed / 100)
 
     with col2:
         st.subheader("Total Lifetime CPD Hours")
         st.metric("Completed Hours", total_cpd_hours_lifetime)
+    
+    st.metric("Yearly Goal (40 hrs)", f"{percentage_completed:.2f}%")
+    st.progress(percentage_completed / 100)
 
-    with col3:
-        st.subheader("CPD Completed by Type")
-        fig, ax = plt.subplots(figsize=(3, 3))
-        colors = plt.get_cmap('Set3')(range(len(cpd_by_type)))
-        ax.pie(cpd_by_type, labels=cpd_by_type.index, autopct='%1.1f%%', startangle=90, wedgeprops={'width': 0.3}, colors=colors)
-        ax.axis('equal')
-        st.pyplot(fig)
+    st.divider()
 
     st.subheader("CPD Records Summary")
     st.write(user_data[['Title', 'Type', 'Hours', 'Date', 'Organization', 'Certificate']])
@@ -241,7 +272,7 @@ def admin_view_dashboard():
     
     # Mapping username to fullname
     full_name_to_username = {record['full_name']: record['username'] for record in user_data}
-    selected_full_name = st.selectbox("Select a user to view", list(full_name_to_username.keys()))
+    selected_full_name = st.selectbox("Select a user to view", options=list(full_name_to_username.keys()))
     st.text("")
     selected_username = full_name_to_username[selected_full_name]
 
