@@ -1,24 +1,17 @@
-import os
-import pandas as pd
 import streamlit as st
+import pandas as pd
 import json
 from datetime import datetime
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
-from utils import (
-    login,
-    log_or_edit_cpd,
-    edit_cpd,
-    admin_dashboard,
-    dashboard,
-    admin_view_dashboard,
-    logout
-)
+from pages_nav import admin_dashboard, admin_view_dashboard, dashboard, log_or_edit_cpd, edit_cpd, login
 
-st.set_page_config(page_title="myCPD Portal", page_icon=None, layout="wide", initial_sidebar_state="auto")
+from utils import logout
 
-# load environment variables
+st.set_page_config(page_title="myCPD Portal", page_icon=None, layout="wide", initial_sidebar_state="collapsed")
+
+# load environment
 load_dotenv()
 
 # Initialize session state variables
