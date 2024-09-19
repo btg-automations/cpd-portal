@@ -1,4 +1,7 @@
+import os
 import streamlit as st
+import boto3
+from botocore.exceptions import NoCredentialsError
 import pandas as pd
 import json
 from datetime import datetime
@@ -28,6 +31,21 @@ def load_data():
 def save_data(data):
     with open(cpd_file, "w") as f:
         json.dump(data, f, indent=4)
+
+def upload_to_s3(file, bucket_name, object_name):
+
+    #  to do - put outside this function
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+        aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+    )
+    
+    try:
+        s3.upload_fileobj(file, bucket_name, object_name)
+        st.success("File uploaded successfully!")
+    except NoCredentialsError:
+        st.error("Credentials not available")
 
 # Login Page
 def login():
@@ -90,7 +108,7 @@ def log_or_edit_cpd(edit_mode=False, cpd_to_edit=None):
         description = st.text_area("Description", value=description)
         learning_outcomes = st.text_area("Learning Outcomes and Objectives", value=learning_outcomes)
         links = st.text_input("Supporting Links", value=links)
-        certificate = st.file_uploader("Upload Certificate (PDF)", type=["pdf", "jpg", "jpeg"])
+        certificate = st.file_uploader("Upload Certificate", type=["pdf", "jpg", "jpeg", "png"])
 
         submit = st.form_submit_button("Submit")
 
@@ -129,6 +147,13 @@ def log_or_edit_cpd(edit_mode=False, cpd_to_edit=None):
                 }
                 data.append(new_record)
                 st.success("CPD activity logged successfully.")
+
+            if certificate:
+                bucket_name = os.getenv('AWS_S3_BUCKET_NAME')
+                folder_name = os.getenv('AWS_S3_FOLDER_NAME')
+                object_name = f"{folder_name}/{username}-{certificate.name}"
+
+                upload_to_s3(certificate, bucket_name, object_name)
 
             save_data(data)
 
@@ -265,8 +290,6 @@ def dashboard(username):
             ),
             unsafe_allow_html=True
         )
-
-
 
     st.title("CPD Activities")
     st.write(user_data[['Title', 'Type', 'Hours', 'Date', 'Organization', 'Description', 'Learning outcomes', 'Links']])

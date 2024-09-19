@@ -1,8 +1,10 @@
-import streamlit as st
+import os
 import pandas as pd
+import streamlit as st
 import json
 from datetime import datetime
 import matplotlib.pyplot as plt
+from dotenv import load_dotenv
 
 from utils import (
     login,
@@ -15,6 +17,9 @@ from utils import (
 )
 
 st.set_page_config(page_title="myCPD Portal", page_icon=None, layout="wide", initial_sidebar_state="auto")
+
+# load environment variables
+load_dotenv()
 
 # Initialize session state variables
 if 'authenticated' not in st.session_state:
