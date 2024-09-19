@@ -14,7 +14,7 @@ from utils import (
     logout
 )
 
-st.set_page_config(page_title="CPD Tracker")
+st.set_page_config(page_title="myCPD Portal", page_icon=None, layout="wide", initial_sidebar_state="auto")
 
 # Initialize session state variables
 if 'authenticated' not in st.session_state:
