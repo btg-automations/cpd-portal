@@ -4,13 +4,6 @@ import pandas as pd
 from utils import add_data
 from defaults import users_file
 
-# Sample data for users
-
-# Function to add a new user
-def add_user(df, username, temp_password, user_type):
-    new_user = {'Username': username, 'User Type': user_type}
-    df = pd.concat([df, pd.DataFrame([new_user])], ignore_index=True)
-    return df
 
 def create_new_account():
     st.title('Manage Users')
@@ -40,6 +33,7 @@ def create_new_account():
                 add_data(users_file, new_record)
                 st.success(f"User {username} created successfully!")
 
+    # Finalize manager access requirements first
     # if user_type == 'Manager':
     #     with st.form(key='Add Reports'):
     #         st.subheader('Add Reports')

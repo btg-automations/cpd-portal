@@ -24,8 +24,8 @@ def load_data(file):
         return []
 
 # Save CPD data to JSON file
-def save_data(data):
-    with open(cpd_file, "w") as f:
+def save_data(data, file):
+    with open(file, "w") as f:
         json.dump(data, f, indent=4)
 
 # Add new entry in json

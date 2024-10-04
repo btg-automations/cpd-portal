@@ -11,6 +11,7 @@ from pages_nav import (
     create_new_account,
     dashboard,
     edit_cpd,
+    edit_profile,
     login,
     log_or_edit_cpd)
 
@@ -59,7 +60,7 @@ def show_sidebar_navigation():
         if page == "Create New Account":
             create_new_account()
     else:
-        page = st.sidebar.selectbox("Select Page", ["Dashboard", "Log CPD", "Edit CPD"])
+        page = st.sidebar.selectbox("Select Page", ["Dashboard", "Log CPD", "Edit CPD", "Edit Profile"])
         if page == "Dashboard":
             username = st.session_state.username
             dashboard(username)
@@ -67,6 +68,8 @@ def show_sidebar_navigation():
             log_or_edit_cpd()
         elif page == "Edit CPD":
             edit_cpd()
+        elif page == "Edit Profile":
+            edit_profile()
             
 if __name__ == "__main__":
     main()

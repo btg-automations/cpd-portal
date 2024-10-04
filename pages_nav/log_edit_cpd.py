@@ -91,7 +91,7 @@ def log_or_edit_cpd(edit_mode=False, cpd_to_edit=None):
 
                 upload_to_s3(certificate, bucket_name, object_name)
 
-            save_data(data)
+            save_data(data, cpd_file)
 
 def edit_cpd():
     st.title("Edit CPD Activity")
