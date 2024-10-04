@@ -24,15 +24,22 @@ def create_new_account():
         submit_button = st.form_submit_button(label='Create User')
 
         if submit_button:
-            new_record = {
-                "Username": username,
-                "password": temp_password,
-                "full_name": full_name,
-                "user_type": user_type
-            }
-            add_data(users_file, new_record)
-            st.success(f'User {username} created successfully!')
-    
+            # Load existing users
+            existing_users = pd.read_json(users_file)
+
+            # Check if username already exists
+            if username in existing_users['username'].values:
+                st.error(f"Failed Creating new user. Username {username} already in use")
+            else:
+                new_record = {
+                    "username": username,
+                    "password": temp_password,
+                    "full_name": full_name,
+                    "user_type": user_type
+                }
+                add_data(users_file, new_record)
+                st.success(f"User {username} created successfully!")
+
     # if user_type == 'Manager':
     #     with st.form(key='Add Reports'):
     #         st.subheader('Add Reports')
