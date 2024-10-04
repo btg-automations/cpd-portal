@@ -2,14 +2,16 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
 
-from utils import load_data, load_user_credentials
+from utils import load_data
 from .dashboard import dashboard
+from defaults import cpd_file, users_file
 
-def admin_dashboard():
-    st.title("Admin Dashboard")
+users = load_data(users_file)
 
-    data = load_data()
-    users = load_user_credentials()
+def manager_dashboard():
+    st.title("Manager Dashboard")
+
+    data = load_data(cpd_file)
 
     if not data:
         st.write("No CPD records found.")
@@ -38,8 +40,8 @@ def admin_dashboard():
     st.subheader("CPD Data Table")
     st.table(user_only_df[['full_name', 'Total CPD Hours', 'Target Hours', 'Percentage Completed']])
 
-def admin_view_dashboard():
-    users = load_user_credentials()
+def manager_view_dashboard():
+    # users = load_data(users_file)
 
     user_data = [{'full_name': record["full_name"], "username": record["username"]} for record in users if record["user_type"] == "user"]
 

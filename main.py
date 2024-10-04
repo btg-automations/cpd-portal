@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
 from pages_nav import (
-    admin_dashboard,
-    admin_view_dashboard,
+    manager_dashboard,
+    manager_view_dashboard,
     create_new_account,
     dashboard,
     edit_cpd,
@@ -48,12 +48,12 @@ def main():
 def show_sidebar_navigation():
     st.sidebar.title("Navigation")
     
-    if st.session_state.user_type == 'admin':
+    if st.session_state.user_type == 'manager':
         page = st.sidebar.selectbox("Select Page", ["Overview", "Search"])
         if page == "Overview":
-            admin_dashboard()
+            manager_dashboard()
         elif page == "Search":
-            admin_view_dashboard()
+            manager_view_dashboard()
     elif st.session_state.user_type == 'super_admin':
         page = st.sidebar.selectbox("Select Page", ["Create New Account"])
         if page == "Create New Account":

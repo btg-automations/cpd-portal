@@ -53,7 +53,7 @@ pip install -r requirements.txt
 ```
 
 ### Step 6: Add the Data Files
-Create or add in `users.json` and `cpd_records.json` in the root directory of the repository
+Create or add in `users.json` and `cpd_records.json` in the `\data` directory of the repository
 
 ### Step 7: Run the Application:
 ```bash

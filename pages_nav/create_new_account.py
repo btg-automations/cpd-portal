@@ -19,7 +19,7 @@ def create_new_account():
     with st.form(key='create_user_form'):
         username = st.text_input('Username')
         full_name = st.text_input('Full Name')
-        user_type = st.selectbox('User Type', ['User', 'Manager'])
+        user_type = st.selectbox('User Type', ['user', 'manager'])
         temp_password = st.text_input('Temporary Password', type='password')
         submit_button = st.form_submit_button(label='Create User')
 

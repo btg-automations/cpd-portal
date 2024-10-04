@@ -2,7 +2,10 @@ import os
 import streamlit as st
 from datetime import datetime
 
+from defaults import cpd_file
 from utils import load_data, upload_to_s3, save_data
+
+data = load_data(cpd_file)
 
 def log_or_edit_cpd(edit_mode=False, cpd_to_edit=None):
     if "username" not in st.session_state:
@@ -47,7 +50,6 @@ def log_or_edit_cpd(edit_mode=False, cpd_to_edit=None):
         submit = st.form_submit_button("Submit")
 
         if submit:
-            data = load_data()
 
             username = st.session_state.username
 
@@ -93,8 +95,6 @@ def log_or_edit_cpd(edit_mode=False, cpd_to_edit=None):
 
 def edit_cpd():
     st.title("Edit CPD Activity")
-
-    data = load_data()
 
     username = st.session_state.username
     user_data = [record for record in data if record.get("Username") == username]

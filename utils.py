@@ -7,9 +7,7 @@ import json
 from datetime import datetime
 import matplotlib.pyplot as plt
 
-# Path to JSON files
-cpd_file = "cpd_records.json"
-user_credentials_file = "users.json"
+from defaults import cpd_file, users_file
 
 s3 = boto3.client(
     's3',
@@ -17,18 +15,10 @@ s3 = boto3.client(
     aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
 )
 
-# Load user credentials from JSON file
-def load_user_credentials():
-    try:
-        with open(user_credentials_file, "r") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return []
-
 # Load CPD data from JSON file
-def load_data():
+def load_data(file):
     try:
-        with open(cpd_file, "r") as f:
+        with open(file, "r") as f:
             return json.load(f)
     except FileNotFoundError:
         return []

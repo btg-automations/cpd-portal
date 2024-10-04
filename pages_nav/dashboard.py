@@ -3,12 +3,13 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-from utils import load_data, encode_image_to_base64, generate_pie_chart, get_url
+from defaults import cpd_file
+from utils import load_data, encode_image_to_base64, generate_pie_chart
 
 def dashboard(username):
     # st.title(f"Welcome {st.session_state.full_name}")
 
-    data = load_data()
+    data = load_data(cpd_file)
 
     user_data = pd.DataFrame([record for record in data if record.get('Username', '') == username])
 

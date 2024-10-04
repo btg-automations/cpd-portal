@@ -1,11 +1,12 @@
 import streamlit as st
 
-from utils import load_user_credentials
+from defaults import users_file
+from utils import load_data
 
 def login():
     st.title("Login")
 
-    users = load_user_credentials()
+    users = load_data(users_file)
 
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
