@@ -3,6 +3,7 @@ import pandas as pd
 import json
 from datetime import datetime
 import matplotlib.pyplot as plt
+
 from dotenv import load_dotenv
 
 from pages_nav import (
@@ -17,7 +18,8 @@ from pages_nav import (
 
 from utils import logout
 
-st.set_page_config(page_title="myCPD Portal", page_icon=None, layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="myCPD Portal", page_icon="static_files/Btg-icon.png", layout="wide", initial_sidebar_state="collapsed")
+st.logo("static_files/Btg-Logo.png")
 
 # load environment
 load_dotenv()
