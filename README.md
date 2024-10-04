@@ -53,9 +53,20 @@ pip install -r requirements.txt
 ```
 
 ### Step 6: Add the Data Files
-Create or add in `users.json` and `cpd_records.json` in the `\data` directory of the repository
+Create a folder named `data` and add in `users.json` and `cpd_records.json`
 
-### Step 7: Run the Application:
+### Step 7: Create a `.env` File
+
+Create a `.env` file in the root directory of the project and add your S3 credentials. The `.env` file should look like this:
+
+```
+AWS_ACCESS_KEY_ID=<your_access_key_id>
+AWS_SECRET_ACCESS_KEY=<your_secret_access_key>
+AWS_S3_BUCKET_NAME=<your_bucket_name>
+```
+
+
+### Step 8: Run the Application:
 ```bash
 streamlit run main.py
 ```
