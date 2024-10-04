@@ -37,37 +37,36 @@ if 'user_type' not in st.session_state:
 if 'page' not in st.session_state:
     st.session_state.page = "Login"
 
-# Main app logic
 def main():
     if st.session_state.page == "Login":
         login()
     elif st.session_state.authenticated:
-        # Sidebar navigation
-        st.sidebar.title("Navigation")
-        
-        if st.session_state.user_type == 'admin':
-            page = st.sidebar.selectbox("Select Page", ["Overview", "Search"])
-            if page == "Overview":
-                admin_dashboard()
-            elif page == "Search":
-                admin_view_dashboard()
-        elif st.session_state.user_type == 'super_admin':
-            page = st.sidebar.selectbox("Select Page", ["Create New Account"])
-            if page == "Create New Account":
-                create_new_account()
-        else:
-            page = st.sidebar.selectbox("Select Page", ["Dashboard", "Log CPD", "Edit CPD"])
-            if page == "Dashboard":
-                username = st.session_state.username
-                dashboard(username)
-            elif page == "Log CPD":
-                log_or_edit_cpd()
-            elif page == "Edit CPD":
-                edit_cpd()
-
-        # Logout button
+        show_sidebar_navigation()
         if st.sidebar.button("Logout"):
             logout()
 
+def show_sidebar_navigation():
+    st.sidebar.title("Navigation")
+    
+    if st.session_state.user_type == 'admin':
+        page = st.sidebar.selectbox("Select Page", ["Overview", "Search"])
+        if page == "Overview":
+            admin_dashboard()
+        elif page == "Search":
+            admin_view_dashboard()
+    elif st.session_state.user_type == 'super_admin':
+        page = st.sidebar.selectbox("Select Page", ["Create New Account"])
+        if page == "Create New Account":
+            create_new_account()
+    else:
+        page = st.sidebar.selectbox("Select Page", ["Dashboard", "Log CPD", "Edit CPD"])
+        if page == "Dashboard":
+            username = st.session_state.username
+            dashboard(username)
+        elif page == "Log CPD":
+            log_or_edit_cpd()
+        elif page == "Edit CPD":
+            edit_cpd()
+            
 if __name__ == "__main__":
     main()
