@@ -1,8 +1,9 @@
+import os
 import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-from utils import load_data, encode_image_to_base64, generate_pie_chart
+from utils import load_data, encode_image_to_base64, generate_pie_chart, get_url
 
 def dashboard(username):
     # st.title(f"Welcome {st.session_state.full_name}")
@@ -146,14 +147,9 @@ def dashboard(username):
                 activity = user_data.iloc[i + j]
                 # activity_cert_key = f"{os.getenv("AWS_S3_FOLDER_NAME")}/{username}-{activity["Certificate"]}"
                 
-                # url = s3.generate_presigned_url('get_object',
-                #                 Params={
-                #                     'Bucket': 'cpd-portal-files',
-                #                     'Key': activity_cert_key,
-                #                 },                                  
-                #                 ExpiresIn=3600)
-                
                 # if activity['Certificate']:
+                #     url = get_url(activity_cert_key)
+
                 #     download_cert_button = f'''
                 #         <a href="{url}" style="
                 #             display: inline-block; 

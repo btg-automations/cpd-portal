@@ -38,12 +38,33 @@ def save_data(data):
     with open(cpd_file, "w") as f:
         json.dump(data, f, indent=4)
 
+# Add new entry in json
+def add_data(file_name, new_entry):
+    try:
+        with open(file_name, "r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        data = []
+
+    data.append(new_entry)
+    with open(file_name, "w") as f:
+        json.dump(data, f, indent=4)
+
 def upload_to_s3(file, bucket_name, object_name):
     try:
         s3.upload_fileobj(file, bucket_name, object_name)
         st.success("File uploaded successfully!")
     except NoCredentialsError:
         st.error("Credentials not available")
+
+def get_url(key):
+    url = s3.generate_presigned_url('get_object',
+                                    Params={
+                                        'Bucket': 'cpd-portal-files',
+                                        'Key': key,
+                                    },                                  
+                                    ExpiresIn=3600)
+    return url
 
 def generate_pie_chart(cpd_by_type, background_color='#f9f9f9'):
     fig, ax = plt.subplots(figsize=(6, 3))
@@ -69,7 +90,6 @@ def encode_image_to_base64(fig):
     buf.seek(0)
     img_str = base64.b64encode(buf.read()).decode("utf-8")
     return img_str
-
 
 
 # Logout

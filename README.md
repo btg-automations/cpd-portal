@@ -32,7 +32,7 @@ cd cpd-portal
 Create a virtual environment to isolate the project's dependencies:
 
 ```bash
-python -m venv venv
+python -m venv .venv
 ```
 
 ### Step 4: Activate the Virtual Environment

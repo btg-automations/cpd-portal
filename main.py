@@ -5,7 +5,14 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 
-from pages_nav import admin_dashboard, admin_view_dashboard, dashboard, log_or_edit_cpd, edit_cpd, login
+from pages_nav import (
+    admin_dashboard,
+    admin_view_dashboard,
+    create_new_account,
+    dashboard,
+    edit_cpd,
+    login,
+    log_or_edit_cpd)
 
 from utils import logout
 
@@ -44,6 +51,10 @@ def main():
                 admin_dashboard()
             elif page == "Search":
                 admin_view_dashboard()
+        elif st.session_state.user_type == 'super_admin':
+            page = st.sidebar.selectbox("Select Page", ["Create New Account"])
+            if page == "Create New Account":
+                create_new_account()
         else:
             page = st.sidebar.selectbox("Select Page", ["Dashboard", "Log CPD", "Edit CPD"])
             if page == "Dashboard":
