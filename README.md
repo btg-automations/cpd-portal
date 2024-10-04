@@ -1,7 +1,5 @@
 # cpd-portal
 
-# Project Name
-
 ## Installation Guide
 
 Follow the steps below to install and run the project on your local machine.
