@@ -27,7 +27,7 @@ def manager_dashboard():
         user_cpd_hours.append(total_cpd_hours)
 
     user_only_df['Total CPD Hours'] = user_cpd_hours
-    user_only_df['Target Hours'] = 40
+    user_only_df['Target Hours'] = user_only_df['yearly_hours_goal']
     user_only_df['Percentage Completed'] = (user_only_df['Total CPD Hours'] / user_only_df['Target Hours']) * 100
 
     fig, ax = plt.subplots()
@@ -36,7 +36,6 @@ def manager_dashboard():
     ax.set_ylabel("Total CPD Hours")
     ax.set_title("Total CPD Hours Per User")
     st.pyplot(fig)
-
     st.subheader("CPD Data Table")
     st.table(user_only_df[['full_name', 'Total CPD Hours', 'Target Hours', 'Percentage Completed']])
 

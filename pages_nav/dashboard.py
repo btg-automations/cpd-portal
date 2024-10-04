@@ -3,14 +3,18 @@ import streamlit as st
 import pandas as pd
 from datetime import datetime
 
-from defaults import cpd_file
+from defaults import cpd_file, users_file
 from utils import load_data, encode_image_to_base64, generate_pie_chart
+import json
 
 def dashboard(username):
     # st.title(f"Welcome {st.session_state.full_name}")
 
     data = load_data(cpd_file)
+    user = load_data(users_file)
 
+    user_info = [record for record in user if record.get('username', '') == username][0]
+    yearly_hours_goal = user_info["yearly_hours_goal"]
     user_data = pd.DataFrame([record for record in data if record.get('Username', '') == username])
 
     if user_data.empty:
@@ -22,7 +26,7 @@ def dashboard(username):
     current_year = datetime.now().year
     this_year_df = user_data[user_data['Date'].dt.year == current_year]
     total_cpd_hours_year = this_year_df['Hours'].sum()
-    percentage_completed = (total_cpd_hours_year / 40) * 100
+    percentage_completed = (total_cpd_hours_year / yearly_hours_goal) * 100
 
     total_cpd_hours_lifetime = user_data['Hours'].sum()
 
@@ -36,7 +40,7 @@ def dashboard(username):
                     <div style="flex: 1; background-color: #f9f9f9; padding: 15px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                         <h3>Total CPD Hours This Year</h3>
                         <p><strong>Completed Hours:</strong> {}</p>
-                        <p><strong>Yearly Goal (40 hrs):</strong> {:.2f}%</p>
+                        <p><strong>Yearly Goal ({}):</strong> {:.2f}%</p>
                         <div style="width: 100%; background-color: #e0e0e0; border-radius: 5px; height: 20px;">
                             <div style="width: {:.2f}%; background-color: #4caf50; height: 100%; border-radius: 5px;"></div>
                         </div>
@@ -52,6 +56,7 @@ def dashboard(username):
                 </div>
             """.format(
                 total_cpd_hours_year,
+                yearly_hours_goal,
                 percentage_completed,
                 percentage_completed,
                 total_cpd_hours_lifetime,
