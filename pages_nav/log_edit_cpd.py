@@ -8,12 +8,12 @@ from utils import load_data, upload_to_s3, save_data
 data = load_data(cpd_file)
 
 def log_or_edit_cpd(edit_mode=False, cpd_to_edit=None):
-    if "username" not in st.session_state:
+    if "user_profile" not in st.session_state:
         st.error("No user is logged in. Please log in first.")
         return
 
-    username = st.session_state.username
-    st.title(f"Log CPD Activity for {username}")
+    email = st.session_state.user_profile['mail']
+    st.title(f"Log CPD Activity for {email}")
 
     if edit_mode and cpd_to_edit:
         title = cpd_to_edit["Title"]
@@ -51,12 +51,12 @@ def log_or_edit_cpd(edit_mode=False, cpd_to_edit=None):
 
         if submit:
 
-            username = st.session_state.username
+            # email = st.session_state.username
 
             if edit_mode and cpd_to_edit:
                 index = data.index(cpd_to_edit)
                 data[index] = {
-                    "Username": username,
+                    "email": email,
                     "Title": title,
                     "Type": cpd_type,
                     "Hours": hours,
@@ -70,7 +70,7 @@ def log_or_edit_cpd(edit_mode=False, cpd_to_edit=None):
                 st.success("CPD activity updated successfully.")
             else:
                 new_record = {
-                    "Username": username,
+                    "email": email,
                     "Title": title,
                     "Type": cpd_type,
                     "Hours": hours,
@@ -87,7 +87,7 @@ def log_or_edit_cpd(edit_mode=False, cpd_to_edit=None):
             if certificate:
                 bucket_name = os.getenv('AWS_S3_BUCKET_NAME')
                 folder_name = os.getenv('AWS_S3_FOLDER_NAME')
-                object_name = f"{folder_name}/{username}-{certificate.name}"
+                object_name = f"{folder_name}/{email}-{certificate.name}"
 
                 upload_to_s3(certificate, bucket_name, object_name)
 
@@ -96,8 +96,8 @@ def log_or_edit_cpd(edit_mode=False, cpd_to_edit=None):
 def edit_cpd():
     st.title("Edit CPD Activity")
 
-    username = st.session_state.username
-    user_data = [record for record in data if record.get("Username") == username]
+    email = st.session_state.user_profile['mail']
+    user_data = [record for record in data if record.get("email") == email]
 
     if not user_data:
         st.write("No CPD records found.")

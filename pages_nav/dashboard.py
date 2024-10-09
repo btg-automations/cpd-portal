@@ -7,15 +7,15 @@ from defaults import cpd_file, users_file
 from utils import load_data, encode_image_to_base64, generate_pie_chart
 import json
 
-def dashboard(username):
+def dashboard(email):
     # st.title(f"Welcome {st.session_state.full_name}")
 
     data = load_data(cpd_file)
     user = load_data(users_file)
 
-    user_info = [record for record in user if record.get('username', '') == username][0]
+    user_info = [record for record in user if record.get('email', '') == email][0]
     yearly_hours_goal = user_info["yearly_hours_goal"]
-    user_data = pd.DataFrame([record for record in data if record.get('Username', '') == username])
+    user_data = pd.DataFrame([record for record in data if record.get('email', '') == email])
 
     if user_data.empty:
         st.write("No CPD records found.")

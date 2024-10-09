@@ -8,10 +8,10 @@ def edit_profile():
 
     # Load user data
     user_data = load_data(users_file)
-    user_info = [record for record in user_data if record.get('username', '') == st.session_state.username][0]
+    user_info = [record for record in user_data if record.get('email', '') == st.session_state.user_profile['mail']][0]
 
     with st.form(key='edit_form'):
-        full_name = st.text_input("Name", user_info.get('full_name', ''))
+        # full_name = st.text_input("Name", user_info.get('full_name', ''))
         yearly_hours_goal = st.number_input("Yearly CPD Hours Goal", value=user_info.get('yearly_hours_goal', 0.0))
 
         # Submit
@@ -20,9 +20,8 @@ def edit_profile():
         if submit_button:
             index = user_data.index(user_info)
             user_data[index] = {
-                "username": user_info.get('username', ''),
+                "email": user_info.get('email', ''),
                 "password": user_info.get('password', ''),
-                "full_name": full_name,
                 "yearly_hours_goal": yearly_hours_goal,
                 "user_type": user_info.get('user_type', '')
             }

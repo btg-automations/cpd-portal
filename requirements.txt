@@ -1,5 +1,7 @@
 boto3
 python-dotenv
 matplotlib
+msal
 pandas
+requests
 streamlit

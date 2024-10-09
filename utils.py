@@ -84,9 +84,16 @@ def encode_image_to_base64(fig):
 
 # Logout
 def logout():
-    st.session_state.authenticated = False
-    st.session_state.username = ""
-    st.session_state.full_name = ""
-    st.session_state.user_type = ""
-    st.session_state.page = "Login"  # Redirect to login page after logout
-    st.rerun()
+    # st.session_state.authenticated = False
+    # st.session_state.username = ""
+    # st.session_state.full_name = ""
+    # st.session_state.user_type = ""
+    # st.session_state.page = "Login"  # Redirect to login page after logout
+    # st.rerun()
+
+     # Clear session state
+        for key in list(st.session_state.keys()):
+            del st.session_state[key]
+
+        # Instead of using experimental_set_query_params, use st.markdown to simulate a redirect
+        st.markdown("<meta http-equiv='refresh' content='0; url=/' />", unsafe_allow_html=True)
