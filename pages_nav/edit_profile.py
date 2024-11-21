@@ -4,7 +4,7 @@ from defaults import users_file
 from utils import load_data, save_data
 
 def edit_profile():
-    st.title("Edit Profile")
+    st.title("Settings")
 
     # Load user data
     user_data = load_data(users_file)
@@ -12,7 +12,7 @@ def edit_profile():
 
     with st.form(key='edit_form'):
         # full_name = st.text_input("Name", user_info.get('full_name', ''))
-        yearly_hours_goal = st.number_input("Yearly CPD Hours Goal", value=user_info.get('yearly_hours_goal', 0.0))
+        yearly_hours_goal = st.number_input("Yearly CPD Hours Goal", value=user_info.get('yearly_hours_goal', 0.0), min_value=40, max_value=5000, step=1)
 
         # Submit
         submit_button = st.form_submit_button(label='Save')

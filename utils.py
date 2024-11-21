@@ -47,6 +47,16 @@ def upload_to_s3(file, bucket_name, object_name):
     except NoCredentialsError:
         st.error("Credentials not available")
 
+def get_s3_object(s3_bucket, object_name):
+    url = s3.generate_presigned_url('get_object',
+            Params={
+                'Bucket': s3_bucket,
+                'Key': object_name,
+            },                                  
+        ExpiresIn=3600)
+    
+    return url
+
 def get_url(key):
     url = s3.generate_presigned_url('get_object',
                                     Params={

@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime
 
 from defaults import cpd_file, users_file
-from utils import load_data, encode_image_to_base64, generate_pie_chart
+from utils import load_data, encode_image_to_base64, generate_pie_chart, get_s3_object
 import json
 
 def dashboard(email):
@@ -139,7 +139,7 @@ def dashboard(email):
     st.markdown(page_bg_img, unsafe_allow_html=True)
 
     # Show CPD activities in 3 columns
-    st.title("CPD Activities")
+    # st.title("CPD Activities")
 
     # Number of columns for each row
     num_cols = 3
@@ -151,36 +151,23 @@ def dashboard(email):
         for j in range(num_cols):
             if i + j < len(user_data):
                 activity = user_data.iloc[i + j]
-                # activity_cert_key = f"{os.getenv("AWS_S3_FOLDER_NAME")}/{username}-{activity["Certificate"]}"
-                
-                # if activity['Certificate']:
-                #     url = get_url(activity_cert_key)
-
-                #     download_cert_button = f'''
-                #         <a href="{url}" style="
-                #             display: inline-block; 
-                #             padding: 8px 16px; 
-                #             border: 1px solid #6200ee; 
-                #             border-radius: 5px; 
-                #             color: #6200ee; 
-                #             text-decoration: none;">
-                #             Download certificate
-                #         </a>
-                #     '''
-                # else:
-                #     download_cert_button = ""
+                if activity["Certificate"]:
+                    url = get_s3_object(os.getenv('AWS_S3_BUCKET_NAME'), activity["Certificate"])
+                else:
+                    url = None
                 
                 with row[j]:
                     st.markdown(f'''
                         <div class="scaling-box">
                             <h3>{activity["Title"]}</h3>
                             <div class="scaling-box-inner">
-                                <p><i class="fas fa-calendar-day"></i> <strong>Date of CPD Activity: </strong>{activity["Date"].strftime("%Y-%m-%d")}</p>
+                                <p><i class="fas fa-calendar-day"></i> <strong>Date: </strong>{activity["Date"].strftime("%Y-%m-%d")}</p>
                                 <p><i class="fas fa-tag"></i> <strong>Type:</strong> {activity["Type"]}</p>
                                 <p><i class="fas fa-building"></i> <strong>Organization:</strong> {activity["Organization"]}</p>
                                 <p><i class="fas fa-file-alt"></i> <strong>Description:</strong><p> {activity["Description"]}</p>
                                 <p><i class="fas fa-bullhorn"></i> <strong>Outcomes & Objectives:</strong><p> {activity["Learning outcomes"]}</p>
                                 <p><i class="fas fa-link"></i> <strong>Links:</strong><p><a href="{activity['Links']}" target="_blank">{activity['Links']}</a></p>
+                                <img src="{url}" style="max-width: 100%;"/>
                             </div>
                             <p class="scaling-box-description">
                                 <i class="fas fa-clock"></i> <strong>{activity["Hours"]} hours logged</strong>

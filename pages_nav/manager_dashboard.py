@@ -30,12 +30,16 @@ def manager_dashboard():
     user_only_df['Target Hours'] = user_only_df['yearly_hours_goal']
     user_only_df['Percentage Completed'] = (user_only_df['Total CPD Hours'] / user_only_df['Target Hours']) * 100
 
-    fig, ax = plt.subplots()
-    ax.bar(user_only_df['full_name'], user_only_df['Total CPD Hours'], color='skyblue')
-    ax.set_xlabel("User")
-    ax.set_ylabel("Total CPD Hours")
-    ax.set_title("Total CPD Hours Per User")
-    st.pyplot(fig)
+    col1, col2, col3 = st.columns([1, 3, 1])
+
+    with col2:
+        fig, ax = plt.subplots()
+        ax.bar(user_only_df['full_name'], user_only_df['Total CPD Hours'], color='skyblue')
+        ax.set_xlabel("User")
+        ax.set_ylabel("Total CPD Hours")
+        ax.set_title("Total CPD Hours Per User")
+        st.pyplot(fig)
+
     st.subheader("CPD Data Table")
     st.table(user_only_df[['full_name', 'Total CPD Hours', 'Target Hours', 'Percentage Completed']])
 
@@ -55,3 +59,4 @@ def manager_view_dashboard():
     selected_email = full_name_to_email[selected_full_name]
 
     dashboard(selected_email)
+    
