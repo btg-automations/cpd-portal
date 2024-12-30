@@ -18,11 +18,11 @@ def manager_dashboard():
         return
 
     users_df = pd.DataFrame(users)
-    user_only_df = users_df[users_df['user_type'] == 'user']
+    user_only_df = users_df #TODO: Display only reports if manager and all if admin
 
     user_cpd_hours = []
-    for user in user_only_df['username']:
-        user_data = pd.DataFrame([record for record in data if record.get('Username', '') == user])
+    for user in user_only_df['email']:
+        user_data = pd.DataFrame([record for record in data if record.get('email', '') == user])
         total_cpd_hours = user_data['Hours'].sum() if not user_data.empty else 0
         user_cpd_hours.append(total_cpd_hours)
 
@@ -30,28 +30,32 @@ def manager_dashboard():
     user_only_df['Target Hours'] = user_only_df['yearly_hours_goal']
     user_only_df['Percentage Completed'] = (user_only_df['Total CPD Hours'] / user_only_df['Target Hours']) * 100
 
-    fig, ax = plt.subplots()
-    ax.bar(user_only_df['full_name'], user_only_df['Total CPD Hours'], color='skyblue')
-    ax.set_xlabel("User")
-    ax.set_ylabel("Total CPD Hours")
-    ax.set_title("Total CPD Hours Per User")
-    st.pyplot(fig)
+    col1, col2, col3 = st.columns([1, 3, 1])
+
+    with col2:
+        fig, ax = plt.subplots()
+        ax.bar(user_only_df['full_name'], user_only_df['Total CPD Hours'], color='skyblue')
+        ax.set_xlabel("User")
+        ax.set_ylabel("Total CPD Hours")
+        ax.set_title("Total CPD Hours Per User")
+        st.pyplot(fig)
+
     st.subheader("CPD Data Table")
     st.table(user_only_df[['full_name', 'Total CPD Hours', 'Target Hours', 'Percentage Completed']])
 
 def manager_view_dashboard():
-    # users = load_data(users_file)
 
-    user_data = [{'full_name': record["full_name"], "username": record["username"]} for record in users if record["user_type"] == "user"]
+    user_data = [{'full_name': record["full_name"], "email": record["email"]} for record in users]
 
     if not user_data:
         st.write("No users found.")
         return
     
     # Mapping username to fullname
-    full_name_to_username = {record['full_name']: record['username'] for record in user_data}
-    selected_full_name = st.selectbox("Select a user to view", options=list(full_name_to_username.keys()))
+    full_name_to_email = {record['full_name']: record['email'] for record in user_data}
+    selected_full_name = st.selectbox("Select a user to view", options=list(full_name_to_email.keys()))
     st.text("")
-    selected_username = full_name_to_username[selected_full_name]
+    selected_email = full_name_to_email[selected_full_name]
 
-    dashboard(selected_username)
+    dashboard(selected_email)
+    
