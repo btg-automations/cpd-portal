@@ -38,7 +38,7 @@ def log_or_edit_cpd(edit_mode=False, cpd_to_edit=None):
 
     with st.form("cpd_form"):
         title = st.text_input("CPD Title", value=title)
-        cpd_type = st.selectbox("Type of CPD", ["Event", "Seminar", "Webinar", "Training Course", "Training Video"], index=["Event", "Seminar", "Webinar", "Training Course", "Training Video"].index(cpd_type))
+        cpd_type = st.selectbox("Type of CPD", ["Event", "Seminar/Webinar", "Training - participation", "Training - facilitation", "Informal Learning"], index=["Event", "Seminar/Webinar", "Training - participation", "Training - facilitation", "Informal Learning"].index(cpd_type))
         hours = st.number_input("Number of CPD Hours", min_value=0.0, step=0.5, value=hours)
         date = st.date_input("Date of CPD Activity", value=date)
         organization = st.text_input("Name of Organization Providing the Training", value=organization)
@@ -119,3 +119,11 @@ def edit_cpd():
     cpd_to_edit = user_data[cpd_titles.index(selected_cpd)]
 
     log_or_edit_cpd(edit_mode=True, cpd_to_edit=cpd_to_edit)
+
+    if st.button("Delete CPD Record"):
+        print("reached")
+        data.remove(cpd_to_edit)
+        print(data)
+        save_data(data, cpd_file)
+        st.rerun()
+        st.success("CPD record deleted successfully.")

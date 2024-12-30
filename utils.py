@@ -94,13 +94,6 @@ def encode_image_to_base64(fig):
 
 # Logout
 def logout():
-    # st.session_state.authenticated = False
-    # st.session_state.username = ""
-    # st.session_state.full_name = ""
-    # st.session_state.user_type = ""
-    # st.session_state.page = "Login"  # Redirect to login page after logout
-    # st.rerun()
-
      # Clear session state
         for key in list(st.session_state.keys()):
             del st.session_state[key]

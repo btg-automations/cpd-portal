@@ -9,6 +9,7 @@ from login_utils import custom_css, get_token_from_code, get_user_profile
 from utils import logout, load_data
 
 from pages_nav import (
+    admin_manage_users,
     manager_dashboard,
     manager_view_dashboard,
     create_new_account,
@@ -28,6 +29,8 @@ def show_sidebar_navigation():
 
     if user_info['user_type'] == 'manager':
         page = st.sidebar.selectbox("Select Page", ["Dashboard", "Log CPD", "Edit CPD", "Settings", "Manager - Overview", "Manager - Search"])
+    elif user_info['user_type'] == 'admin':
+        page = st.sidebar.selectbox("Select Page", ["Dashboard", "Log CPD", "Edit CPD", "Settings", "Manager - Overview", "Manager - Search", "Admin - Manage Users"])
     else:
         page = st.sidebar.selectbox("Select Page", ["Dashboard", "Log CPD", "Edit CPD", "Settings"])
 
@@ -43,6 +46,8 @@ def show_sidebar_navigation():
         edit_cpd()
     elif page == "Settings":
         edit_profile()
+    elif page == "Admin - Manage Users":
+        admin_manage_users()
 
 # Main function to handle the app flow
 def main():

@@ -11,7 +11,7 @@ authority = f"https://login.microsoftonline.com/{tenant_id}"
 redirect_uri = 'http://localhost:8501'
 scope = ["User.Read"]
 
-print("Azure AD app starting")
+# print("Azure AD app starting")
 
 # Initialize MSAL
 app = msal.ConfidentialClientApplication(
@@ -20,7 +20,7 @@ app = msal.ConfidentialClientApplication(
     client_credential=client_secret,
 )
 
-print("Azure AD app initialized")
+# print("Azure AD app initialized")
 
 # Function to get Azure AD authentication URL
 def get_auth_url():

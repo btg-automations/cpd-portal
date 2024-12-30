@@ -18,7 +18,7 @@ def manager_dashboard():
         return
 
     users_df = pd.DataFrame(users)
-    user_only_df = users_df[users_df['user_type'] == 'user']
+    user_only_df = users_df #TODO: Display only reports if manager and all if admin
 
     user_cpd_hours = []
     for user in user_only_df['email']:
@@ -44,9 +44,8 @@ def manager_dashboard():
     st.table(user_only_df[['full_name', 'Total CPD Hours', 'Target Hours', 'Percentage Completed']])
 
 def manager_view_dashboard():
-    # users = load_data(users_file)
 
-    user_data = [{'full_name': record["full_name"], "email": record["email"]} for record in users if record["user_type"] == "user"]
+    user_data = [{'full_name': record["full_name"], "email": record["email"]} for record in users]
 
     if not user_data:
         st.write("No users found.")
