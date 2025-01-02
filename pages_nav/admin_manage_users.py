@@ -16,7 +16,12 @@ def admin_manage_users():
     #dictionary to map emails to full names
     email_to_full_name = dict(zip(users_df['email'], users_df['full_name']))
 
+    if "reports" not in users_df.columns:
+        users_df['reports'] = ""
+
     users_df.loc[users_df["user_type"] == "manager", "reports"] = users_df.loc[users_df['user_type'] == 'manager', 'reports'].apply(lambda reports: [email_to_full_name.get(email, email) for email in reports])
+    # users_df.loc[users_df["user_type"] == "user", "reports"] = "Not Applicable"
+    # users_df.loc[users_df["user_type"] == "admin", "reports"] = "All Access"
 
     st.dataframe(users_df[['full_name', 'user_type', 'reports']], width=1000)
     # Select a user to edit
@@ -32,13 +37,7 @@ def admin_manage_users():
             user_type = st.selectbox("User Type", ["user", "manager", "admin"], index=["user", "manager", "admin"].index(user_data['user_type']), key="user_type")
 
             if st.form_submit_button("Save Changes"):
-                users_data[index] = {
-                    "full_name": user_data.get('full_name', ''),
-                    "email": user_data.get('email', ''),
-                    "password": user_data.get('password', ''),
-                    "user_type": user_type,
-                    "reports": user_data.get('reports', [])
-                }
+                users_data[index]["user_type"] = user_type
                 if user_type in ["user", "admin"]:
                     users_data[index].pop("reports")
                 elif user_type == "manager":

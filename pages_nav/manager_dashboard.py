@@ -8,6 +8,16 @@ from defaults import cpd_file, users_file
 
 users = load_data(users_file)
 
+# Show only reports of the manager
+if "user_profile" in st.session_state:
+    if st.session_state.user_profile['user_type'] == 'manager':
+        user_data = [record for record in users if record.get('email', '') == st.session_state.user_profile["userPrincipalName"]]
+        index = users.index(user_data[0])
+        reports = users[index]['reports']
+        users = [record for record in users if record.get('email', '') in reports]
+    elif st.session_state.user_profile['user_type'] == 'user':
+        st.error("You do not have permission to view this page.")
+
 def manager_dashboard():
     st.title("Manager Dashboard")
 
@@ -18,30 +28,29 @@ def manager_dashboard():
         return
 
     users_df = pd.DataFrame(users)
-    user_only_df = users_df #TODO: Display only reports if manager and all if admin
 
     user_cpd_hours = []
-    for user in user_only_df['email']:
+    for user in users_df['email']:
         user_data = pd.DataFrame([record for record in data if record.get('email', '') == user])
         total_cpd_hours = user_data['Hours'].sum() if not user_data.empty else 0
         user_cpd_hours.append(total_cpd_hours)
 
-    user_only_df['Total CPD Hours'] = user_cpd_hours
-    user_only_df['Target Hours'] = user_only_df['yearly_hours_goal']
-    user_only_df['Percentage Completed'] = (user_only_df['Total CPD Hours'] / user_only_df['Target Hours']) * 100
+    users_df['Total CPD Hours'] = user_cpd_hours
+    users_df['Target Hours'] = users_df['yearly_hours_goal']
+    users_df['Percentage Completed'] = (users_df['Total CPD Hours'] / users_df['Target Hours']) * 100
 
     col1, col2, col3 = st.columns([1, 3, 1])
 
     with col2:
         fig, ax = plt.subplots()
-        ax.bar(user_only_df['full_name'], user_only_df['Total CPD Hours'], color='skyblue')
+        ax.bar(users_df['full_name'], users_df['Total CPD Hours'], color='skyblue')
         ax.set_xlabel("User")
         ax.set_ylabel("Total CPD Hours")
         ax.set_title("Total CPD Hours Per User")
         st.pyplot(fig)
 
     st.subheader("CPD Data Table")
-    st.table(user_only_df[['full_name', 'Total CPD Hours', 'Target Hours', 'Percentage Completed']])
+    st.table(users_df[['full_name', 'Total CPD Hours', 'Target Hours', 'Percentage Completed']])
 
 def manager_view_dashboard():
 
