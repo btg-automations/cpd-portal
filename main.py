@@ -69,17 +69,20 @@ def main():
             user_profile = get_user_profile(token)
 
             email = user_profile["userPrincipalName"]
-            user = [record for record in user_data if record.get('email', '') == email][0]
-            index = user_data.index(user)
+            if any(record.get('email', '') == email for record in user_data):
+                user = [record for record in user_data if record.get('email', '') == email][0]
+                index = user_data.index(user)
 
-            st.session_state['user_profile'] = user_profile
-            st.session_state.user_profile["user_type"] = user_data[index]["user_type"]
-            st.session_state.user_profile["fulle_name"] = user_data[index]["full_name"]
-            st.success(f"Logged in as {st.session_state.user_profile["fulle_name"]}")
+                st.session_state['user_profile'] = user_profile
+                st.session_state.user_profile["user_type"] = user_data[index]["user_type"]
+                st.session_state.user_profile["fulle_name"] = user_data[index]["full_name"]
+                st.success(f"Logged in as {st.session_state.user_profile["fulle_name"]}")
 
-            st.rerun()
-    else:
-        login_page()
+                st.rerun()
+            else:
+                st.error("Email not found in user data. Please contact Data Team or an administrator for assistance.")
+        else:
+            login_page()
 
 if __name__ == "__main__":
     main()
