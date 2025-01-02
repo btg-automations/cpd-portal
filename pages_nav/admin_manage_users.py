@@ -16,48 +16,73 @@ def admin_manage_users():
     #dictionary to map emails to full names
     email_to_full_name = dict(zip(users_df['email'], users_df['full_name']))
 
-    users_df.loc[users_df["user_type"] == "manager", "reports"] = users_df.loc[users_df['user_type'] == 'manager', 'reports'].apply(lambda reports: [email_to_full_name.get(email, email) for email in reports])
+    if "reports" not in users_df.columns:
+        users_df['reports'] = ""
+
+    users_df.loc[users_df["user_type"] == "manager", "reports"] = users_df.loc[users_df['user_type'] == 'manager', 'reports'].apply(lambda reports: [email_to_full_name.get(email, email) for email in (reports if isinstance(reports, list) else [])])
+    # users_df.loc[users_df["user_type"] == "user", "reports"] = [["Not Applicable"]]
+    # users_df.loc[users_df["user_type"] == "admin", "reports"] = [["All Access"]]
 
     st.dataframe(users_df[['full_name', 'user_type', 'reports']], width=1000)
-    # Select a user to edit
-    selected_user = st.selectbox("Select a user to edit", users_df['full_name'])
 
-    if selected_user:
-        user_data = [record for record in users_data if record.get('full_name', '') == selected_user][0]
-        index = users_data.index(user_data)
+    # Add a new user
+    with st.expander("Add a new user"):
+        with st.form("add_user_form"):
+            full_name = st.text_input("Full Name")
+            email = st.text_input("Email")
+            user_type = st.selectbox("User Type", ["user", "manager", "admin"])
+            if user_type == "manager":
+                choices = [name for name in users_df['full_name'] if name != full_name]
+                reports = st.multiselect("Reports", choices)
+            else:
+                reports = []
 
-        edit_reports = user_data['user_type'] == "manager"
-
-        with st.form("edit_user_form"):
-            user_type = st.selectbox("User Type", ["user", "manager", "admin"], index=["user", "manager", "admin"].index(user_data['user_type']), key="user_type")
-
-            if st.form_submit_button("Save Changes"):
-                users_data[index] = {
-                    "full_name": user_data.get('full_name', ''),
-                    "email": user_data.get('email', ''),
-                    "password": user_data.get('password', ''),
+            if st.form_submit_button("Add User"):
+                new_user = {
+                    "full_name": full_name,
+                    "email": email,
                     "user_type": user_type,
-                    "reports": user_data.get('reports', [])
+                    "yearly_hours_goal": 40,
+                    "reports": [email for email, name in email_to_full_name.items() if name in reports]
                 }
-                if user_type in ["user", "admin"]:
-                    users_data[index].pop("reports")
-                elif user_type == "manager":
-                    users_data[index]["reports"] = user_data.get('reports', [])
-
+                users_data.append(new_user)
                 save_data(users_data, users_file)
-                st.success("User data updated successfully!")
+                st.success("User added successfully!")
                 st.rerun()
-    
-        if edit_reports:
-            with st.form("Reports"):
-                choices = [name for email, name in email_to_full_name.items() if name != selected_user]
-                if 'reports' in user_data.keys():
-                    reports_list = [email_to_full_name.get(email, email) for email in user_data['reports']]
-                    reports = st.multiselect("Reports", choices, default=reports_list, key="reports")
-                else:
-                    reports = st.multiselect("Reports", choices, key="reports")
-                if st.form_submit_button("Save Reports"):
-                    users_data[index]["reports"] = [email for email, name in email_to_full_name.items() if name in reports]
+
+    # Select a user to edit
+    with st.expander("Edit a user"):
+        selected_user = st.selectbox("Select a user to edit", users_df['full_name'])
+
+        if selected_user:
+            user_data = [record for record in users_data if record.get('full_name', '') == selected_user][0]
+            index = users_data.index(user_data)
+
+            with st.form("edit_user_form"):
+                user_type = st.selectbox("User Type", ["user", "manager", "admin"], index=["user", "manager", "admin"].index(user_data['user_type']), key="user_type")
+
+                if st.form_submit_button("Save Changes"):
+                    users_data[index]["user_type"] = user_type
+                    if user_type in ["user", "admin"]:
+                        users_data[index].pop("reports", None)
+                    elif user_type == "manager":
+                        users_data[index]["reports"] = user_data.get('reports', [])
+
                     save_data(users_data, users_file)
-                    st.success("Reports updated successfully!")
-                    st.rerun()
+                    if (user_type != user_data['user_type']) & (user_type == "manager"):
+                        st.rerun()
+                    st.success("User data updated successfully!")
+
+            if user_type == "manager":
+                with st.form("Reports"):
+                    choices = [name for email, name in email_to_full_name.items() if name != selected_user]
+                    if 'reports' in user_data.keys():
+                        reports_list = [email_to_full_name.get(email, email) for email in user_data['reports']]
+                        reports = st.multiselect("Reports", choices, default=reports_list, key="reports")
+                    else:
+                        reports = st.multiselect("Reports", choices, key="reports")
+                    if st.form_submit_button("Save Reports"):
+                        users_data[index]["reports"] = [email for email, name in email_to_full_name.items() if name in reports]
+                        save_data(users_data, users_file)
+                        st.rerun()
+                        st.success("Reports updated successfully!")

@@ -22,8 +22,9 @@ from pages_nav import (
 st.set_page_config(page_title="myCPD Portal", page_icon="static_files/Btg-icon.png", layout="wide", initial_sidebar_state="collapsed")
 st.logo("static_files/Btg-Logo.png")
 
+user_data = load_data(users_file)
+
 def show_sidebar_navigation():
-    user_data = load_data(users_file)
     user_info = [record for record in user_data if record.get('email', '') == st.session_state.user_profile['mail']][0]
     st.sidebar.title("Navigation")
 
@@ -67,11 +68,21 @@ def main():
             st.session_state['access_token'] = token['access_token']
             user_profile = get_user_profile(token)
 
-            st.session_state['user_profile'] = user_profile
-            st.success(f"Logged in as {user_profile['displayName']}")
-            st.rerun()
-    else:
-        login_page()
+            email = user_profile["userPrincipalName"]
+            if any(record.get('email', '') == email for record in user_data):
+                user = [record for record in user_data if record.get('email', '') == email][0]
+                index = user_data.index(user)
+
+                st.session_state['user_profile'] = user_profile
+                st.session_state.user_profile["user_type"] = user_data[index]["user_type"]
+                st.session_state.user_profile["fulle_name"] = user_data[index]["full_name"]
+                st.success(f"Logged in as {st.session_state.user_profile["fulle_name"]}")
+
+                st.rerun()
+            else:
+                st.error("Email not found in user data. Please contact Data Team or an administrator for assistance.")
+        else:
+            login_page()
 
 if __name__ == "__main__":
     main()
