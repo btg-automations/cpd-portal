@@ -30,25 +30,21 @@ def admin_manage_users():
         with st.form("add_user_form"):
             full_name = st.text_input("Full Name")
             email = st.text_input("Email")
-            user_type = st.selectbox("User Type", ["user", "manager", "admin"])
-            if user_type == "manager":
-                choices = [name for name in users_df['full_name'] if name != full_name]
-                reports = st.multiselect("Reports", choices)
-            else:
-                reports = []
 
             if st.form_submit_button("Add User"):
-                new_user = {
-                    "full_name": full_name,
-                    "email": email,
-                    "user_type": user_type,
-                    "yearly_hours_goal": 40,
-                    "reports": [email for email, name in email_to_full_name.items() if name in reports]
-                }
-                users_data.append(new_user)
-                save_data(users_data, users_file)
-                st.success("User added successfully!")
-                st.rerun()
+                if email in users_df['email'].values:
+                    st.error("A user with this email already exists.")
+                else:
+                    new_user = {
+                        "full_name": full_name,
+                        "email": email,
+                        "user_type": "user",
+                        "yearly_hours_goal": 40
+                    }
+                    users_data.append(new_user)
+                    save_data(users_data, users_file)
+                    st.success("User added successfully!")
+                    st.rerun()
 
     # Select a user to edit
     with st.expander("Edit a user"):

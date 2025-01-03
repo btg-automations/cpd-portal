@@ -24,7 +24,11 @@ def manager_dashboard():
     data = load_data(cpd_file)
 
     if not data:
-        st.write("No CPD records found.")
+        st.warning("No CPD records found.")
+        return
+    
+    if not users:
+        st.warning("No users found.")
         return
 
     users_df = pd.DataFrame(users)
@@ -53,11 +57,12 @@ def manager_dashboard():
     st.table(users_df[['full_name', 'Total CPD Hours', 'Target Hours', 'Percentage Completed']])
 
 def manager_view_dashboard():
+    st.title("Manager View Dashboard")
 
     user_data = [{'full_name': record["full_name"], "email": record["email"]} for record in users]
 
     if not user_data:
-        st.write("No users found.")
+        st.warning("No users found.")
         return
     
     # Mapping username to fullname

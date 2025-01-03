@@ -13,7 +13,7 @@ def log_or_edit_cpd(edit_mode=False, cpd_to_edit=None):
         return
 
     email = st.session_state.user_profile['mail']
-    st.title(f"Log CPD Activity for {email}")
+    st.title(f"Log CPD Activity")
 
     if edit_mode and cpd_to_edit:
         title = cpd_to_edit["Title"]
