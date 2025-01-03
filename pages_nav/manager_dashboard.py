@@ -24,7 +24,11 @@ def manager_dashboard():
     data = load_data(cpd_file)
 
     if not data:
-        st.write("No CPD records found.")
+        st.warning("No CPD records found.")
+        return
+    
+    if not users:
+        st.warning("No users found.")
         return
 
     users_df = pd.DataFrame(users)
@@ -39,25 +43,25 @@ def manager_dashboard():
     users_df['Target Hours'] = users_df['yearly_hours_goal']
     users_df['Percentage Completed'] = (users_df['Total CPD Hours'] / users_df['Target Hours']) * 100
 
-    col1, col2, col3 = st.columns([1, 3, 1])
-
-    with col2:
-        fig, ax = plt.subplots()
-        ax.bar(users_df['full_name'], users_df['Total CPD Hours'], color='skyblue')
-        ax.set_xlabel("User")
-        ax.set_ylabel("Total CPD Hours")
-        ax.set_title("Total CPD Hours Per User")
-        st.pyplot(fig)
+    fig, ax = plt.subplots()
+    ax.bar(users_df['full_name'], users_df['Total CPD Hours'], color='skyblue')
+    ax.set_xlabel("User")
+    ax.set_ylabel("Total CPD Hours")
+    ax.set_title("Total CPD Hours Per User")
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    st.pyplot(fig)
 
     st.subheader("CPD Data Table")
     st.table(users_df[['full_name', 'Total CPD Hours', 'Target Hours', 'Percentage Completed']])
 
 def manager_view_dashboard():
+    st.title("Manager View Dashboard")
 
     user_data = [{'full_name': record["full_name"], "email": record["email"]} for record in users]
 
     if not user_data:
-        st.write("No users found.")
+        st.warning("No users found.")
         return
     
     # Mapping username to fullname

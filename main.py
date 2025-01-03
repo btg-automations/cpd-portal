@@ -81,8 +81,8 @@ def main():
                 st.rerun()
             else:
                 st.error("Email not found in user data. Please contact Data Team or an administrator for assistance.")
-        else:
-            login_page()
+    else:
+        login_page()
 
 if __name__ == "__main__":
     main()
