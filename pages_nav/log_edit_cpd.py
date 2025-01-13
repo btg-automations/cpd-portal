@@ -121,9 +121,7 @@ def edit_cpd():
     log_or_edit_cpd(edit_mode=True, cpd_to_edit=cpd_to_edit)
 
     if st.button("Delete CPD Record"):
-        print("reached")
         data.remove(cpd_to_edit)
-        print(data)
         save_data(data, cpd_file)
         st.rerun()
         st.success("CPD record deleted successfully.")

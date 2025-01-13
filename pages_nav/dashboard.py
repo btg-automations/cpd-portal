@@ -22,10 +22,9 @@ def dashboard(email):
         return
 
     user_data['Date'] = pd.to_datetime(user_data['Date'], format="%Y-%m-%d")
-
-    current_year = datetime.now().year
-    this_year_df = user_data[user_data['Date'].dt.year == current_year]
-    total_cpd_hours_year = this_year_df['Hours'].sum()
+    # current_year = datetime.now().year
+    # this_year_df = user_data[user_data['Date'].dt.year == current_year]
+    total_cpd_hours_year = user_data['Hours'].sum()
     percentage_completed = (total_cpd_hours_year / yearly_hours_goal) * 100
 
     total_cpd_hours_lifetime = user_data['Hours'].sum()
