@@ -123,5 +123,5 @@ def edit_cpd():
     if st.button("Delete CPD Record"):
         data.remove(cpd_to_edit)
         save_data(data, cpd_file)
-        st.rerun()
+        # st.rerun()
         st.success("CPD record deleted successfully.")
