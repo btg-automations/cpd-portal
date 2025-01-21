@@ -75,8 +75,8 @@ def main():
 
                 st.session_state['user_profile'] = user_profile
                 st.session_state.user_profile["user_type"] = user_data[index]["user_type"]
-                st.session_state.user_profile["fulle_name"] = user_data[index]["full_name"]
-                st.success(f"Logged in as {st.session_state.user_profile["fulle_name"]}")
+                st.session_state.user_profile["full_name"] = user_data[index]["full_name"]
+                st.success(f"Logged in as {st.session_state.user_profile['full_name']}")
 
                 st.rerun()
             else:
