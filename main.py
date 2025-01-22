@@ -62,11 +62,13 @@ def main():
         auth_code = st.query_params['code']
         if isinstance(auth_code, list):
             auth_code = auth_code[0]
+            st.title("code is list")
 
         token = get_token_from_code(auth_code)
         if 'access_token' in token:
             st.session_state['access_token'] = token['access_token']
             user_profile = get_user_profile(token)
+            st.title(user_profile)
 
             email = user_profile["userPrincipalName"]
             if any(record.get('email', '') == email for record in user_data):
@@ -77,7 +79,6 @@ def main():
                 st.session_state.user_profile["user_type"] = user_data[index]["user_type"]
                 st.session_state.user_profile["full_name"] = user_data[index]["full_name"]
                 st.success(f"Logged in as {st.session_state.user_profile['full_name']}")
-
                 st.rerun()
             else:
                 st.error("Email not found in user data. Please contact Data Team or an administrator for assistance.")
